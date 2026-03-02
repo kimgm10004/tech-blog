@@ -7103,30 +7103,31 @@ console.log('[ReplayModal] System ready');
       // 게임 세션 ID 생성 (다른 탭/창 감지용)
       const currentSessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
       
-      // 같은 창/탭에서 중복 실행 방지
-      const GAME_SESSION_KEY = 'dotRacing_activeSession';
-      const existingSession = localStorage.getItem(GAME_SESSION_KEY);
-      
-      if (existingSession) {
-        alert('⚠️ 게임이 이미 다른 창/탭에서 실행 중입니다!\n\n같은 계정은 하나의 창에서만 플레이할 수 있습니다.\n\n다른 창을 닫고 다시 시도해 주세요.');
-        console.warn('[Auth] Duplicate session detected, closing this window');
-        window.location.href = 'login.html';
-      } else {
-        localStorage.setItem(GAME_SESSION_KEY, currentSessionId);
-        
-        window.addEventListener('beforeunload', () => {
-          localStorage.removeItem(GAME_SESSION_KEY);
-        });
-        
-        window.addEventListener('storage', (e) => {
-          if (e.key === GAME_SESSION_KEY && e.newValue !== currentSessionId) {
-            alert('⚠️ 게임이 다른 창/탭에서 시작되었습니다!\n\n이 창은 자동으로 닫힙니다.');
-            window.location.href = 'login.html';
-          }
-        });
-        
-        console.log('[Auth] Game session started:', currentSessionId);
-      }
+      // [비활성화] 같은 창/탭에서 중복 실행 방지
+      // const GAME_SESSION_KEY = 'dotRacing_activeSession';
+      // const existingSession = localStorage.getItem(GAME_SESSION_KEY);
+      // if (existingSession) {
+      //   alert('⚠️ 게임이 이미 다른 창/탭에서 실행 중입니다!\n\n같은 계정은 하나의 창에서만 플레이할 수 있습니다.\n\n다른 창을 닫고 다시 시도해 주세요.');
+      //   console.warn('[Auth] Duplicate session detected, closing this window');
+      //   window.location.href = 'login.html';
+      // } else {
+      //   localStorage.setItem(GAME_SESSION_KEY, currentSessionId);
+      //   
+      //   window.addEventListener('beforeunload', () => {
+      //     localStorage.removeItem(GAME_SESSION_KEY);
+      //   });
+      //   
+      //   window.addEventListener('storage', (e) => {
+      //     if (e.key === GAME_SESSION_KEY && e.newValue !== currentSessionId) {
+      //       alert('⚠️ 게임이 다른 창/탭에서 시작되었습니다!\n\n이 창은 자동으로 닫힙니다.');
+      //       window.location.href = 'login.html';
+      //     }
+      //   });
+      //   
+      //   console.log('[Auth] Game session started:', currentSessionId);
+      // }
+
+      console.log('[Auth] Game session started (중복 실행 방지 비활성화됨):', currentSessionId);
       
       // 이미 로그인된 사용자가 있으면 즉시 세션 체크
       if (currentUser) {
@@ -7691,12 +7692,17 @@ console.log('[ReplayModal] System ready');
         // IP 주소는 CSP限制了んで 제거
         const userIP = 'blocked_by_csp';
         
-        // ========== 중복 로그인 방지 ==========
+        // ========== [비활성화] 중복 로그인 방지 ==========
         // Firebase 초기화는 이미 완료되었으므로 바로 진행
         
-        // 같은 계정 다른 기기에서 로그인했는지 확인
+        // 같은 계정 다른 기기에서 로그인했는지 확인 (비활성화)
+        /*
         try {
-      if (!window.firebaseReady || !window.db) { console.warn('[DB] Firebase not ready'); return; }
+          if (!window.firebaseReady || !window.db) { console.warn('[DB] Firebase not ready'); return; }
+          // ... (기존 중복 로그인 방지 코드)
+        */
+       
+        console.log('[Auth] Login processed (중복 로그인 방지 비활성화됨)');
           const userRef = window.firestoreModule.doc(window.db,'users',user.uid);
           const userDoc = await window.firestoreModule.getDoc(userRef);
           
